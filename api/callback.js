@@ -1,0 +1,40 @@
+const fetch = require("node-fetch");
+
+const CLIENT_ID = process.env.MISOCA_CLIENT_ID;
+const CLIENT_SECRET = process.env.MISOCA_CLIENT_SECRET;
+const REDIRECT_URI = "https://misoca-proxy.vercel.app/api/callback"; // ←デプロイ後のURLに合わせる
+const TOKEN_URL = "https://app.misoca.jp/oauth2/token";
+const GAS_URL = "https://script.google.com/macros/s/XXXXX/exec?action=saveToken"; // ←社内GASのURLに差し替え
+
+module.exports = async (req, res) => {
+  const code = req.query.code;
+  if (!code) {
+    res.status(400).send("❌ codeがありません");
+    return;
+  }
+
+  // Misocaにアクセストークンをリクエスト
+  const response = await fetch(TOKEN_URL, {
+    method: "POST",
+    headers: {
+      "Authorization": "Basic " + Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString("base64"),
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: `grant_type=authorization_code&code=${encodeURIComponent(code)}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`
+  });
+
+  const data = await response.json();
+
+  if (data.access_token) {
+    // ✅ 社内のGASに転送
+    await fetch(GAS_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
+
+    res.status(200).send("✅ Misoca認証成功。トークンを社内GASに保存しました。");
+  } else {
+    res.status(500).send("❌ トークン取得失敗: " + JSON.stringify(data));
+  }
+};
