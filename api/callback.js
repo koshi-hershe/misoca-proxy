@@ -1,6 +1,6 @@
 const CLIENT_ID = process.env.MISOCA_CLIENT_ID;
 const CLIENT_SECRET = process.env.MISOCA_CLIENT_SECRET;
-const REDIRECT_URI = "https://misoca-proxy.vercel.app/api/callback"; // ←固定URL
+const REDIRECT_URI = "https://misocaproxy.vercel.app/api/callback"; // ←固定URL
 const TOKEN_URL = "https://app.misoca.jp/oauth2/token";
 const GAS_URL = "https://script.google.com/a/macros/hershe.jp/s/AKfycbxRxqI4pfyBUOQjLMVAxP6caCogf7J8tu5ADk8dYJmJSF9u3JVlKYLzCZjeLab0p4HWIw/exec?action=saveToken"; // ←あなたのGAS URL
 
