@@ -26,6 +26,7 @@ export default async function handler(req, res) {
     });
 
     const data = await response.json();
+    console.log("Misoca token response:", data);
 
     if (data.access_token) {
       // ✅ 社内のGASに転送
