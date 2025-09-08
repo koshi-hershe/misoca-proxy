@@ -30,11 +30,12 @@ export default async function handler(req, res) {
 
     if (data.access_token) {
       // ✅ 社内のGASに転送
-      await fetch(GAS_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
+  await fetch(GAS_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: "payload=" + encodeURIComponent(JSON.stringify(data)),
+});
+
 
       return res
         .status(200)
